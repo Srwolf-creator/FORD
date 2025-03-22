@@ -100,7 +100,9 @@
           if (!dataConteo[concat] || dataConteo[concat].conteo == '') {
             dataConteo[concat] = 1 
             if (respuesta == 'Si') {
-              dataResp[concat] = dataConteo[concat] 
+              dataResp[concat] = 1
+            } else {
+              dataResp[concat] = 0
             }
           } else {
             dataConteo[concat] += 1 
