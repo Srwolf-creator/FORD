@@ -190,11 +190,25 @@
     for (const key in newDic) {
       let calificacionDic = newDic[key].califiacionNew 
       let procesoDic = newDic[key].procesoNew 
+      let concesionarioDic = newDic[key].concesionairoNew 
+      let sedeDic = newDic[key].sedeNew 
+      let consede = `${concesionarioDic}-${sedeDic}`
+      let codigoDic = newDic[key].codigoDic
+      let cicloDic = newDic[key].cicloNew
+      let paisDic = newDic[key].paisNew
+      let ciudadDic = newDic[key].ciudadNew
 
       let clas = calificacionDic == '100%' ? 1 : 0
       if (!newData[procesoDic] || newData[procesoDic].proceso == '') {
 
         newData[procesoDic] = {
+          concesionario: concesionarioDic,
+          sede: sedeDic,
+          consede: consede,
+          codigo: codigoDic,
+          ciclo: cicloDic,
+          pais: paisDic,
+          ciudad: ciudadDic,
           proceso: 1, 
           clalificacion: clas
         } 
