@@ -101,13 +101,11 @@
             dataConteo[concat] = 1 
             if (respuesta == 'Si') {
               dataResp[concat] = dataConteo[concat] 
-            } else {
-              dataResp[concat] = dataConteo[concat]  - 1
-            } 
+            }
           } else {
             dataConteo[concat] += 1 
-            if (respuesta !== 'Si') {
-              dataResp[concat] -=  1
+            if (respuesta == 'Si') {
+              dataResp[concat] +=  1
             }
           }
 
