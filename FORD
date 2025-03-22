@@ -183,44 +183,28 @@
     }
 
     const newArray = Object.values(newDic);
-console.log("newArray",newArray);
-console.log("newArray",newArray.length);
+//   console.log("newArray",newArray);
+// console.log("newArray",newArray.length);
 
-    // let newDic2 = {}
-    // for (let j = 0; j < nuevosDatos.length; j++) {
-    //   if (!nuevosDatos[j].numElemento) continue
-    //   if (!nuevosDatos[j].concat) continue
+    let newData = {}
+    for (const key in newDic) {
+      let calificacionDic = newDic[key].califiacionNew 
+      let procesoDic = newDic[key].califiacionNew 
 
-    //   let newKey2 = nuevosDatos[j].concat
-    //   if (!newDic[newKey2] || !newDic[newKey2].concede) {
-    //     const paisNew2 = nuevosDatos[j].pais
-    //     const cicloNew2 = nuevosDatos[j].ciclo
-    //     const codigoNew2 = nuevosDatos[j].codigo
-    //     const concesionairoNew2 = nuevosDatos[j].concesionario
-    //     const ciudadNew2 = nuevosDatos[j].ciudad
-    //     const fechavisitaNew2 = nuevosDatos[j].fechaVisita
-    //     const procesoNew2 = nuevosDatos[j].proceso
-    //     const subprocesoNew2 = nuevosDatos[j].subproceso
-    //     const elementoNew2 = nuevosDatos[j].elemento
-    //     const numElementoNew2 = nuevosDatos[j].numElemento
-    //     const sedeNew2 = nuevosDatos[j].sede
-    //     const sedeNew23 = nuevosDatos[j].sede
-    //     const baseNew2 = nuevosDatos[j].base
-    //     const concatNew2 = nuevosDatos[j].concat
-    //     const conteoNew2 = nuevosDatos[j].conteo
-    //     const puntajeNew2 = nuevosDatos[j].puntaje
-    //     const califiacionNew2 = nuevosDatos[j].calificacion
-    //     const consede = ${concesionairoNew2} - ${sedeNew2}
-    //     const lanzamiento = null
-    //     const inicio = null
-     
-    //     newDic[newKey2] = {
+      let clas = calificacionDic == '100%' ? 1 : 0
+      if (!newData[procesoDic] || newData[procesoDic].proceso == '') {
 
-    //     }
-    //   } 
-    // }
+        newData[procesoDic] = {
+          proceso: 1, 
+          clalificacion: clas
+        } 
+      } else {
+        newData[procesoDic].proceso += 1
+        newData[procesoDic].clalificacion += clas
+      }
+    }
 
-
+    console.log('newData', newData)
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
     const formatoSheetEf = spreadsheetEf.getSheetByName('Compra - EF');
