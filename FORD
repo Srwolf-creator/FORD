@@ -1,0 +1,258 @@
+/* function onOpen() {
+  // Obtener la interfaz de usuario de la hoja de cálculo
+  const ui = SpreadsheetApp.getUi();
+
+  // Crear un menú personalizado
+  ui.createMenu('Acciones Personalizadas')
+    .addItem('Ejecutar Actualización', 'obtenerDatosYActualizar') // Añadir un ítem al menú
+    .addToUi(); // Añadir el menú a la interfaz de usuario
+}*/
+
+
+ function obtenerDatosYActualizar() {
+
+  // IDs de las hojas de cálculo principales y su correspondiente base (P1, P2, etc.)
+  const ids = [
+    { id: '13h3phJ0MXop5cvC4Rd79YeTZUflqNXRmG3YtYi5uRdk', base: 'P1' },
+    { id: '1WP4JA0-2DSPKn2eKxL5DRDgk3dwGuOTlLfD2f03EZ1k', base: 'P2' },
+    { id: '1eJ5h2huabI1y-6caDzKAbAPDHx4Za8AMyWnLQUz8hiE', base: 'P3' },
+    { id: '1xvLwNUPviBNu_CEGo-N7C2DuiaH2fVqbOlOLH9RiTWE', base: 'P4' },
+    { id: '1vEUH7Etw4wBENv5WDEKHXD3gal85iFUNdTVVQ3VKD0w', base: 'P5' },
+    { id: '1D90cfJZGlLlcMhSdwVaeVIxDxGAAsA2Qt2qlaiakWRw', base: 'P6' },
+    { id: '1bSQVZshCRJ_fJn9C6hEFcaDuFRwF9Q_XFelVlS2BFEE', base: 'P7' },
+    { id: '1dVDJPbJdaI-q9ITj0Kc23U1TN_t1z8iRrIY8rqtqZ9s', base: 'P8' },
+    { id: '1gUlTkn47r0DyPPQo8NoZSM1NFOHdGBYli3mdZ6nn1HY', base: 'P9' }
+  ];
+
+  // ID de la hoja de cálculo adicional para buscar datos
+  const consId = '1FWpTR65G5WLzIRraTtAejRq24aojsJYv5x7S_KZ44lg';
+
+  // Columnas a extraer de las hojas principales
+  const columnas = {
+    pais: 'C',
+    ciclo: 'E',
+    codigo: 'G',
+    concesionario: 'F',
+    ciudad: 'D',
+    fechaVisita: 'A',
+    sede: 'H'
+  };
+
+  // Columnas a buscar en la hoja adicional
+  const columnasCons = {
+    pregunta: 'C',
+    proceso: 'G',
+    subproceso: 'H',
+    elemento: 'I',
+    numElemento: 'E'
+  };
+
+  // Abrir la hoja adicional "SUBPROCESOS"
+  const consSpreadsheet = SpreadsheetApp.openById(consId);
+  const consSheet = consSpreadsheet.getSheetByName('SUBPROCESOS');
+  const consData = consSheet.getDataRange().getValues();
+
+  // Recorrer cada hoja de cálculo principal
+  ids.forEach(({ id, base }) => {
+    const spreadsheet = SpreadsheetApp.openById(id);
+    const sheet = spreadsheet.getSheetByName('Respuestas de formulario 1');
+    const formatoSheet = spreadsheet.getSheetByName('Formato');
+
+    // Obtener los datos de la hoja "Respuestas de formulario 1"
+    const data = sheet.getDataRange().getValues();
+
+    // Obtener los encabezados de las preguntas (K1, L1, M1, etc.)
+    const preguntas = data[0].slice(10); // Desde la columna K (índice 10) hasta el final
+    const ultimaPregunta = preguntas.findIndex(p => p === ''); // Encontrar el primer campo vacío
+    const preguntasFiltradas = ultimaPregunta === -1 ? preguntas : preguntas.slice(0, ultimaPregunta);
+
+    // Preparar los datos para la hoja "Formato"
+    const nuevosDatos = [];
+    const dataConteo = {};
+    data.slice(1).forEach((row, rowIndex) => { // Ignorar la fila de encabezados
+      // Extraer las columnas especificadas
+      const pais = row[columnas.pais.charCodeAt(0) - 65];
+      const ciclo = row[columnas.ciclo.charCodeAt(0) - 65];
+      const codigo = row[columnas.codigo.charCodeAt(0) - 65];
+      const concesionario = row[columnas.concesionario.charCodeAt(0) - 65];
+      const ciudad = row[columnas.ciudad.charCodeAt(0) - 65];
+      const fechaVisita = row[columnas.fechaVisita.charCodeAt(0) - 65];
+      const sede = row[columnas.sede.charCodeAt(0) - 65];
+      const fechaFormateada = Utilities.formatDate(new Date(fechaVisita), Session.getScriptTimeZone(), 'dd/MM/yyyy');
+     
+
+      // Recorrer las preguntas y agregar filas en "Formato"
+      preguntasFiltradas.forEach((pregunta, colIndex) => {
+        const respuesta = row[10 + colIndex]; // Respuesta correspondiente a la pregunta
+        if (respuesta !== '') { // Solo agregar si hay una respuesta
+          // Buscar en la hoja adicional "SUBPROCESOS"
+          const filaCons = consData.find(fila => fila[columnasCons.pregunta.charCodeAt(0) - 65] === pregunta);
+          const proceso = filaCons ? filaCons[columnasCons.proceso.charCodeAt(0) - 65] : '';
+          const subproceso = filaCons ? filaCons[columnasCons.subproceso.charCodeAt(0) - 65] : '';
+          const elemento = filaCons ? filaCons[columnasCons.elemento.charCodeAt(0) - 65] : '';
+          const numElemento = filaCons ? filaCons[columnasCons.numElemento.charCodeAt(0) - 65] : '';
+          let concat = `${pais}-${ciclo}-${codigo}-${concesionario}-${ciudad}-${fechaFormateada}-${id}-${base}-${numElemento}`
+          let conteo = null
+          let puntaje = null
+          let calificacion = null
+
+          if (!dataConteo[concat] || dataConteo[concat].conteo == '') {
+            dataConteo[concat] = 1 
+          } else {
+            dataConteo[concat] += 1 
+          }
+
+          nuevosDatos.push({
+            pais, ciclo, codigo, concesionario, ciudad, fechaVisita, pregunta, respuesta, proceso, subproceso, elemento, numElemento, sede, base, concat, conteo, puntaje, calificacion
+        });
+        }
+      });
+    });
+
+    let resDic = {}
+    for (let index = 0; index < nuevosDatos.length; index++) {
+      let key = nuevosDatos[index].concat
+      if (dataConteo[key]) {
+        let numConteo = dataConteo[key]
+        resDic[key] = numConteo
+        nuevosDatos[index].conteo = numConteo
+        if (nuevosDatos[index].respuesta !== 'Si') {
+          resDic[key] -= 1
+          nuevosDatos[index].puntaje = resDic[key] 
+        } else{ 
+          nuevosDatos[index].puntaje = numConteo
+        }
+
+        if (numConteo !== resDic[key]) {
+          nuevosDatos[index].calificacion = '0%'
+        } else {
+          nuevosDatos[index].calificacion = '100%'
+        }
+      }
+    }
+
+    let newDic = {}
+    for (let j = 0; j < nuevosDatos.length; j++) {
+      if (!nuevosDatos[j].numElemento) continue
+      if (!nuevosDatos[j].concat) continue
+
+      let newKey = nuevosDatos[j].concat
+      if (!newDic[newKey] || !newDic[newKey].concede) {
+        const paisNew = nuevosDatos[j].pais
+        const cicloNew = nuevosDatos[j].ciclo
+        const codigoNew = nuevosDatos[j].codigo
+        const concesionairoNew = nuevosDatos[j].concesionario
+        const ciudadNew = nuevosDatos[j].ciudad
+        const fechavisitaNew = nuevosDatos[j].fechaVisita
+        const procesoNew = nuevosDatos[j].proceso
+        const subprocesoNew = nuevosDatos[j].subproceso
+        const elementoNew = nuevosDatos[j].elemento
+        const numElementoNew = nuevosDatos[j].numElemento
+        const sedeNew = nuevosDatos[j].sede
+        const baseNew = nuevosDatos[j].base
+        const concatNew = nuevosDatos[j].concat
+        const conteoNew = nuevosDatos[j].conteo
+        const puntajeNew = nuevosDatos[j].puntaje
+        const califiacionNew = nuevosDatos[j].calificacion
+
+        newDic[newKey] = {
+          paisNew,
+          cicloNew,
+          codigoNew,
+          concesionairoNew,
+          ciudadNew,
+          fechavisitaNew,
+          procesoNew,
+          subprocesoNew,
+          elementoNew,
+          numElementoNew,
+          sedeNew,
+          baseNew,
+          concatNew,
+          conteoNew,
+          puntajeNew,
+          califiacionNew
+        } 
+      } else {
+        continue
+      }
+    }
+
+    const newArray = Object.values(newDic);
+console.log("newArray",newArray);
+console.log("newArray",newArray.length);
+
+    // let newDic2 = {}
+    // for (let j = 0; j < nuevosDatos.length; j++) {
+    //   if (!nuevosDatos[j].numElemento) continue
+    //   if (!nuevosDatos[j].concat) continue
+
+    //   let newKey2 = nuevosDatos[j].concat
+    //   if (!newDic[newKey2] || !newDic[newKey2].concede) {
+    //     const paisNew2 = nuevosDatos[j].pais
+    //     const cicloNew2 = nuevosDatos[j].ciclo
+    //     const codigoNew2 = nuevosDatos[j].codigo
+    //     const concesionairoNew2 = nuevosDatos[j].concesionario
+    //     const ciudadNew2 = nuevosDatos[j].ciudad
+    //     const fechavisitaNew2 = nuevosDatos[j].fechaVisita
+    //     const procesoNew2 = nuevosDatos[j].proceso
+    //     const subprocesoNew2 = nuevosDatos[j].subproceso
+    //     const elementoNew2 = nuevosDatos[j].elemento
+    //     const numElementoNew2 = nuevosDatos[j].numElemento
+    //     const sedeNew2 = nuevosDatos[j].sede
+    //     const sedeNew23 = nuevosDatos[j].sede
+    //     const baseNew2 = nuevosDatos[j].base
+    //     const concatNew2 = nuevosDatos[j].concat
+    //     const conteoNew2 = nuevosDatos[j].conteo
+    //     const puntajeNew2 = nuevosDatos[j].puntaje
+    //     const califiacionNew2 = nuevosDatos[j].calificacion
+    //     const consede = ${concesionairoNew2} - ${sedeNew2}
+    //     const lanzamiento = null
+    //     const inicio = null
+     
+    //     newDic[newKey2] = {
+
+    //     }
+    //   } 
+    // }
+
+
+
+    const spreadsheetEf = SpreadsheetApp.openById(consId);
+    const formatoSheetEf = spreadsheetEf.getSheetByName('Compra - EF');
+    formatoSheetEf.clear();
+    formatoSheetEf.getRange(1, 1, 1, 16).setValues([[
+      'pais', 'ciclo', 'Código', 'Concesionario', 'Ciudad', 'FechaVisita', 'Proceso', 'Subproceso', 'Elemento', 'numElemento', 'Sede', 'Base', 'Concatenado', 'Conteo', 'Puntaje', 'Calificacion'
+    ]]);
+    
+    if (newArray.length > 0) {
+  // Convertir el array de objetos en un array de arrays
+  const newArrayValues = newArray.map(obj => Object.values(obj));
+  
+  // Obtener el número de filas y columnas
+  const numFilas = newArrayValues.length;
+  const numColumnas = newArrayValues[0].length;
+  
+  // Escribir los datos en la hoja "Compra - EF"
+  formatoSheetEf.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValues);
+} else {
+  console.log("No se encontraron datos para agregar a la hoja 'Compra - EF'.");
+}
+
+// Limpiar la hoja "Formato" y agregar los nuevos datos
+formatoSheet.clear();
+formatoSheet.getRange(1, 1, 1, 18).setValues([[
+  'País', 'Ciclo', 'Código', 'Concesionario', 'Ciudad', 'Fecha Visita', 'Pregunta', 'Respuesta', 'Proceso', 'Subproceso1', 'Elemento', '#Elemento', 'Sede', 'Base', 'Concatenado', 'Conteo', 'Puntaje', 'Calificacion'
+]]);
+
+if (nuevosDatos.length > 0) {
+  // Convertir el array de objetos en un array de arrays
+  const nuevosDatosArray = nuevosDatos.map(obj => Object.values(obj));
+  
+  // Escribir los datos en la hoja "Formato"
+  formatoSheet.getRange(2, 1, nuevosDatosArray.length, nuevosDatosArray[0].length).setValues(nuevosDatosArray);
+} else {
+  console.log("No se encontraron datos para agregar a la hoja 'Formato'.");
+}
+});
+  }
