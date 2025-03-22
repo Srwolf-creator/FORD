@@ -189,7 +189,7 @@
     let newData = {}
     for (const key in newDic) {
       let calificacionDic = newDic[key].califiacionNew 
-      let procesoDic = newDic[key].califiacionNew 
+      let procesoDic = newDic[key].procesoNew 
 
       let clas = calificacionDic == '100%' ? 1 : 0
       if (!newData[procesoDic] || newData[procesoDic].proceso == '') {
