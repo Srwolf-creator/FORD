@@ -100,17 +100,15 @@
           if (!dataConteo[concat] || dataConteo[concat].conteo == '') {
             dataConteo[concat] = 1 
             if (respuesta == 'Si') {
-              dataResp[concat] = 1 
+              dataResp[concat] = dataConteo[concat] 
             } else {
-              dataResp[concat] = -1 
+              dataResp[concat] = dataConteo[concat]  - 1
             } 
           } else {
             dataConteo[concat] += 1 
-            if (respuesta == 'Si') {
-              dataResp[concat] += 1 
-            } else {
-              dataResp[concat] -= 1 
-            } 
+            if (respuesta !== 'Si') {
+              dataResp[concat] -=  1
+            }
           }
 
           nuevosDatos.push({
