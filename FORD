@@ -69,6 +69,7 @@
     // Preparar los datos para la hoja "Formato"
     const nuevosDatos = [];
     const dataConteo = {};
+    const dataResp = {};
     data.slice(1).forEach((row, rowIndex) => { // Ignorar la fila de encabezados
       // Extraer las columnas especificadas
       const pais = row[columnas.pais.charCodeAt(0) - 65];
@@ -98,8 +99,18 @@
 
           if (!dataConteo[concat] || dataConteo[concat].conteo == '') {
             dataConteo[concat] = 1 
+            if (respuesta == 'Si') {
+              dataResp[concat] = 1 
+            } else {
+              dataResp[concat] = -1 
+            } 
           } else {
             dataConteo[concat] += 1 
+            if (respuesta == 'Si') {
+              dataResp[concat] += 1 
+            } else {
+              dataResp[concat] -= 1 
+            } 
           }
 
           nuevosDatos.push({
@@ -109,34 +120,19 @@
       });
     });
 
-    let resDic = {}
     for (let index = 0; index < nuevosDatos.length; index++) {
       let key = nuevosDatos[index].concat
       if (dataConteo[key]) {
         let numConteo = dataConteo[key]
-        resDic[key] = numConteo
+        let puntaje = dataResp[key]
         nuevosDatos[index].conteo = numConteo
-        if (nuevosDatos[index].respuesta !== 'Si') {
-          resDic[key] -= 1
-          // nuevosDatos[index].puntaje = resDic[key] 
-        } 
-        
-        // else{ 
-        //   nuevosDatos[index].puntaje = numConteo
-        // }
+        nuevosDatos[index].puntaje = puntaje
 
-        if (numConteo !== resDic[key]) {
+        if (numConteo !== puntaje) {
           nuevosDatos[index].calificacion = '0%'
         } else {
           nuevosDatos[index].calificacion = '100%'
         }
-      }
-    }
-
-    for (let l = 0; l < nuevosDatos.length; l++) { 
-      let key = nuevosDatos[l].concat
-      if (dataConteo[key]) {
-        nuevosDatos[l].puntaje = resDic[key] 
       }
     }
   
