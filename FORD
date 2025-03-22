@@ -118,10 +118,12 @@
         nuevosDatos[index].conteo = numConteo
         if (nuevosDatos[index].respuesta !== 'Si') {
           resDic[key] -= 1
-          nuevosDatos[index].puntaje = resDic[key] 
-        } else{ 
-          nuevosDatos[index].puntaje = numConteo
-        }
+          // nuevosDatos[index].puntaje = resDic[key] 
+        } 
+        
+        // else{ 
+        //   nuevosDatos[index].puntaje = numConteo
+        // }
 
         if (numConteo !== resDic[key]) {
           nuevosDatos[index].calificacion = '0%'
@@ -130,6 +132,14 @@
         }
       }
     }
+
+    for (let l = 0; l < nuevosDatos.length; l++) { 
+      let key = nuevosDatos[l].concat
+      if (dataConteo[key]) {
+        nuevosDatos[l].puntaje = resDic[key] 
+      }
+    }
+  
 
     let newDic = {}
     for (let j = 0; j < nuevosDatos.length; j++) {
