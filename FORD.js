@@ -267,13 +267,12 @@
       }
     }
     
-    console.log('newData', newData)
+    // console.log('newData', newData)
     // console.log('newData length', Object.keys(newData).length)
     
     let interacciones = 0
     for (const dataKey in newData) {
       let motrarLogs = true
-      let numeroLogs = 5
       interacciones += 1
 
       let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
@@ -299,15 +298,14 @@
       newData[dataKey].total = totalGen
 
       if (motrarLogs) {
-        console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso + '-' + newData[dataKey].descubrimiento.reprobo)
-        console.log('Compra', newData[dataKey].compra.paso + '-' + newData[dataKey].compra.reprobo)
-        console.log('Entrega',  newData[dataKey].entrega.paso + '-' + newData[dataKey].entrega.reprobo)
-        console.log('Lealtad',  newData[dataKey].lealtad.paso + '-' + newData[dataKey].lealtad.reprobo)
-        console.log('Habilitadores',  newData[dataKey].habilitadores.paso + '-' + newData[dataKey].habilitadores.reprobo)
+        console.log('Key', dataKey)
+        console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso)
+        console.log('Compra', newData[dataKey].compra.paso)
+        console.log('Entrega',  newData[dataKey].entrega.paso)
+        console.log('Lealtad',  newData[dataKey].lealtad.paso)
+        console.log('Habilitadores',  newData[dataKey].habilitadores.paso)
 
-        if (interacciones == numeroLogs) {
-          motrarLogs = false
-        }
+        motrarLogs = false
       }
     }
 
