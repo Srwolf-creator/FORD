@@ -202,7 +202,7 @@
       let concesionarioDic = newDic[key].concesionairoNew 
       let sedeDic = newDic[key].sedeNew 
       let consede = `${concesionarioDic} - ${sedeDic}`
-      let codigoDic = newDic[key].codigoDic
+      let codigoDic = newDic[key].codigoNew
       let cicloDic = newDic[key].cicloNew
       let paisDic = newDic[key].paisNew
       let ciudadDic = newDic[key].ciudadNew
@@ -306,8 +306,7 @@
 
       let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
 
-      newData[dataKey].total = totalGen
-      
+      newData[dataKey].total = totalGen.toFixed(2)
     }
 
     console.log('newData', newData)
