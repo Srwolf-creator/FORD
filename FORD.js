@@ -207,7 +207,12 @@
       let paisDic = newDic[key].paisNew
       let ciudadDic = newDic[key].ciudadNew
 
-      let cal = calificacionDic == '100%' ? 1 : 0
+
+
+      let cal = calificacionDic == '100%' ? true : false
+      let paso = cal == true ? 1 : 0
+      let reprobo = cal == false ? 1 : 0
+
       if (!newData[consede] || newData[consede].proceso == '') {
 
         newData[consede] = {
@@ -219,35 +224,45 @@
           pais: paisDic,
           ciudad: ciudadDic,
           total: null, 
-          descubrimiento: 0,
-          compra: 0, 
-          entrega: 0, 
-          lealtad: 0, 
-          habilitadores: 0
+          descubrimiento: {paso: 0, reprobo: 0},
+          compra: {paso: 0, reprobo: 0}, 
+          entrega: {paso: 0, reprobo: 0}, 
+          lealtad: {paso: 0, reprobo: 0}, 
+          habilitadores: {paso: 0, reprobo: 0}
         } 
 
         if (procesoDic == processDictionary.descubrimiento) {
-          newData[consede].descubrimiento += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.compra) {
-          newData[consede].compra += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].entrega += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].lealtad += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].habilitadores += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         }
       } else {
         if (procesoDic == processDictionary.descubrimiento) {
-          newData[consede].descubrimiento += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.compra) {
-          newData[consede].compra += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].entrega += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].lealtad += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].habilitadores += cal 
+          newData[consede].descubrimiento.paso += paso
+          newData[consede].descubrimiento.reprobo += reprobo
         }
       }
     }
