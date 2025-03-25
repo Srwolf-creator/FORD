@@ -284,19 +284,19 @@
       let totalOptLea = (parseInt(newData[dataKey].lealtad.paso) + parseInt(newData[dataKey].lealtad.reprobo)) || 0
       let totalOptHab = (parseInt(newData[dataKey].habilitadores.paso) + parseInt(newData[dataKey].habilitadores.reprobo)) || 0 
 
-      console.log('Key', dataKey)
-      console.log('Descubrimiento',  totalOptDes)
-      console.log('Compra', totalOptCom)
-      console.log('Entrega',  totalOptEnt)
-      console.log('Lealtad',  totalOptLea)
-      console.log('Habilitadores',  totalOptDes)
+      // console.log('Key', dataKey)
+      // console.log('Descubrimiento',  totalOptDes)
+      // console.log('Compra', totalOptCom)
+      // console.log('Entrega',  totalOptEnt)
+      // console.log('Lealtad',  totalOptLea)
+      // console.log('Habilitadores',  totalOptDes)
 
 
-      let porcentajeDes = (newData[dataKey].descubrimiento.paso / totalOptDes) * 100
-      let porcentajeCom = (newData[dataKey].compra.paso / totalOptCom) * 100
-      let porcentajeEnt = (newData[dataKey].entrega.paso / totalOptEnt) * 100
-      let porcentajeLea = (newData[dataKey].lealtad.paso / totalOptLea) * 100
-      let porcentajeHab = (newData[dataKey].habilitadores.paso / totalOptHab) * 100 
+      let porcentajeDes = totalOptDes > 0 ? (newData[dataKey].descubrimiento.paso / totalOptDes) * 100 : 0
+      let porcentajeCom = totalOptCom > 0 ? (newData[dataKey].compra.paso / totalOptCom) * 100 : 0
+      let porcentajeEnt = totalOptEnt > 0 ? (newData[dataKey].entrega.paso / totalOptEnt) * 100 : 0
+      let porcentajeLea = totalOptLea > 0 ? (newData[dataKey].lealtad.paso / totalOptLea) * 100 : 0
+      let porcentajeHab = totalOptHab > 0 ? (newData[dataKey].habilitadores.paso / totalOptHab) * 100 : 0
       
       newData[dataKey].descubrimiento = porcentajeDes.toFixed(2)
       newData[dataKey].compra = porcentajeCom.toFixed(2)
@@ -310,7 +310,7 @@
       
     }
 
-    // console.log('newData', newData)
+    console.log('newData', newData)
 
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
