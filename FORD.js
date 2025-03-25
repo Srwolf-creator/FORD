@@ -275,15 +275,20 @@
       let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
       let totalOptLea = newData[dataKey].lealtad.paso + newData[dataKey].lealtad.reprobo 
       let totalOptHab = newData[dataKey].habilitadores.paso + newData[dataKey].habilitadores.reprobo 
-      
-      
-      newData[dataKey].descubrimiento = (totalOptDes/newData[dataKey].descubrimiento.paso * 100)
-      newData[dataKey].compra = (totalOptCom/newData[dataKey].compra.paso * 100)
-      newData[dataKey].entrega = (totalOptEnt/newData[dataKey].entrega.paso * 100)
-      newData[dataKey].lealtad = (totalOptLea/newData[dataKey].lealtad.paso * 100)
-      newData[dataKey].habilitadores = (totalOptHab/newData[dataKey].habilitadores.paso * 100)
 
-      let totalGen = (totalOptDes/newData[dataKey].descubrimiento.paso * 100) + (totalOptCom/newData[dataKey].compra.paso * 100) + (totalOptEnt/newData[dataKey].entrega.paso * 100) + (totalOptLea/newData[dataKey].lealtad.paso * 100) + (totalOptHab/newData[dataKey].habilitadores.paso * 100) / 5 
+      let porcentajeDes = (newData[dataKey].descubrimiento.paso / totalOptDes) * 100
+      let porcentajeCom = (newData[dataKey].compra.paso / totalOptCom) * 100
+      let porcentajeEnt = (newData[dataKey].entrega.paso / totalOptEnt) * 100
+      let porcentajeLea = (newData[dataKey].lealtad.paso / totalOptLea) * 100
+      let porcentajeHab = (newData[dataKey].habilitadores.paso / totalOptHab) * 100 
+      
+      newData[dataKey].descubrimiento = porcentajeDes
+      newData[dataKey].compra = porcentajeCom
+      newData[dataKey].entrega = porcentajeEnt
+      newData[dataKey].lealtad = porcentajeLea
+      newData[dataKey].habilitadores = porcentajeHab
+
+      let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
 
       newData[dataKey].total = totalGen
     }
