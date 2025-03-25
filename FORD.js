@@ -283,15 +283,15 @@
       let porcentajeLea = totalOptLea > 0 ? (newData[dataKey].lealtad.paso / totalOptLea) * 100 : 0
       let porcentajeHab = totalOptHab > 0 ? (newData[dataKey].habilitadores.paso / totalOptHab) * 100 : 0
       
-      newData[dataKey].descubrimiento = `%${porcentajeDes.toFixed(2)}`
-      newData[dataKey].compra = `%${porcentajeCom.toFixed(2)}`
-      newData[dataKey].entrega = `%${porcentajeEnt.toFixed(2)}`
-      newData[dataKey].lealtad = `%${porcentajeLea.toFixed(2)}`
-      newData[dataKey].habilitadores = `%${porcentajeHab.toFixed(2)}`
+      newData[dataKey].descubrimiento = `${porcentajeDes.toFixed(2)}%`
+      newData[dataKey].compra = `${porcentajeCom.toFixed(2)}%`
+      newData[dataKey].entrega = `${porcentajeEnt.toFixed(2)}%`
+      newData[dataKey].lealtad = `${porcentajeLea.toFixed(2)}%`
+      newData[dataKey].habilitadores = `${porcentajeHab.toFixed(2)}%`
 
       let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
 
-      newData[dataKey].total = `%${totalGen.toFixed(2)}`
+      newData[dataKey].total = `${totalGen.toFixed(2)}%`
     }
 
     // console.log('newData', newData)
