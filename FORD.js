@@ -270,20 +270,24 @@
     // console.log('newData length', Object.keys(newData).length)
     
     for (const dataKey in newData) {
-      let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.reprobo 
-      let totalOptCom = dataKey[dataKey].compra.paso + dataKey[dataKey].compra.reprobo 
-      let totalOptEnt = dataKey[dataKey].entrega.paso + dataKey[dataKey].entrega.reprobo 
-      let totalOptLea = dataKey[dataKey].lealtad.paso + dataKey[dataKey].lealtad.reprobo 
-      let totalOptHab = dataKey[dataKey].habilitadores.paso + dataKey[dataKey].habilitadores.reprobo 
+      let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
+      let totalOptCom = newData[dataKey].compra.paso + newData[dataKey].compra.reprobo 
+      let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
+      let totalOptLea = newData[dataKey].lealtad.paso + newData[dataKey].lealtad.reprobo 
+      let totalOptHab = newData[dataKey].habilitadores.paso + newData[dataKey].habilitadores.reprobo 
       
       
-      newData[dataKey].descubrimiento = (totalOptDes/dataKey[dataKey].descubrimiento.paso * 100)
-      newData[dataKey].compra = (totalOptCom/dataKey[dataKey].compra.paso * 100)
-      newData[dataKey].entrega = (totalOptEnt/dataKey[dataKey].entrega.paso * 100)
-      newData[dataKey].lealtad = (totalOptLea/dataKey[dataKey].lealtad.paso * 100)
-      newData[dataKey].habilitadores = (totalOptHab/dataKey[dataKey].habilitadores.paso * 100)
+      newData[dataKey].descubrimiento = (totalOptDes/newData[dataKey].descubrimiento.paso * 100)
+      newData[dataKey].compra = (totalOptCom/newData[dataKey].compra.paso * 100)
+      newData[dataKey].entrega = (totalOptEnt/newData[dataKey].entrega.paso * 100)
+      newData[dataKey].lealtad = (totalOptLea/newData[dataKey].lealtad.paso * 100)
+      newData[dataKey].habilitadores = (totalOptHab/newData[dataKey].habilitadores.paso * 100)
+
+      let totalGen = (totalOptDes/newData[dataKey].descubrimiento.paso * 100) + (totalOptCom/newData[dataKey].compra.paso * 100) + (totalOptEnt/newData[dataKey].entrega.paso * 100) + (totalOptLea/newData[dataKey].lealtad.paso * 100) + (totalOptHab/newData[dataKey].habilitadores.paso * 100) / 5 
+
+      newData[dataKey].total = totalGen
     }
-    
+
     console.log('newData', newData)
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
