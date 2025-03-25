@@ -216,13 +216,14 @@
       if (!newData[consede] || newData[consede].proceso == '') {
 
         newData[consede] = {
-          concesionario: concesionarioDic,
-          sede: sedeDic,
           consede: consede,
           codigo: codigoDic,
           ciclo: cicloDic,
           pais: paisDic,
           ciudad: ciudadDic,
+          concesionario: concesionarioDic,
+          sede: sedeDic,
+          nameSede: sedeDic,
           total: null, 
           descubrimiento: {paso: 0, reprobo: 0},
           compra: {paso: 0, reprobo: 0}, 
@@ -269,28 +270,12 @@
     
     // console.log('newData length', Object.keys(newData).length)
     
-    let motrarLogs = true
     for (const dataKey in newData) {
-      // console.log('Key', dataKey)
-      // console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso, newData[dataKey].descubrimiento.reprobo)
-      // console.log('Compra', newData[dataKey].compra.paso, newData[dataKey].compra.reprobo)
-      // console.log('Entrega',  newData[dataKey].entrega.paso, newData[dataKey].entrega.reprobo)
-      // console.log('Lealtad',  newData[dataKey].lealtad.paso, newData[dataKey].lealtad.reprobo)
-      // console.log('Habilitadores',  newData[dataKey].habilitadores.paso, newData[dataKey].habilitadores.reprobo)
-
       let totalOptDes = (parseInt(newData[dataKey].descubrimiento.paso) + parseInt(newData[dataKey].descubrimiento.reprobo)) || 0
       let totalOptCom = (parseInt(newData[dataKey].compra.paso) + parseInt(newData[dataKey].compra.reprobo)) || 0
       let totalOptEnt = (parseInt(newData[dataKey].entrega.paso) + parseInt(newData[dataKey].entrega.reprobo)) || 0
       let totalOptLea = (parseInt(newData[dataKey].lealtad.paso) + parseInt(newData[dataKey].lealtad.reprobo)) || 0
       let totalOptHab = (parseInt(newData[dataKey].habilitadores.paso) + parseInt(newData[dataKey].habilitadores.reprobo)) || 0 
-
-      // console.log('Key', dataKey)
-      // console.log('Descubrimiento',  totalOptDes)
-      // console.log('Compra', totalOptCom)
-      // console.log('Entrega',  totalOptEnt)
-      // console.log('Lealtad',  totalOptLea)
-      // console.log('Habilitadores',  totalOptDes)
-
 
       let porcentajeDes = totalOptDes > 0 ? (newData[dataKey].descubrimiento.paso / totalOptDes) * 100 : 0
       let porcentajeCom = totalOptCom > 0 ? (newData[dataKey].compra.paso / totalOptCom) * 100 : 0
@@ -309,7 +294,8 @@
       newData[dataKey].total = totalGen.toFixed(2)
     }
 
-    console.log('newData', newData)
+    // console.log('newData', newData)
+    const newArrayData = Object.values(newData)
 
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
@@ -320,18 +306,38 @@
     ]]);
     
     if (newArray.length > 0) {
-  // Convertir el array de objetos en un array de arrays
-  const newArrayValues = newArray.map(obj => Object.values(obj));
-  
-  // Obtener el número de filas y columnas
-  const numFilas = newArrayValues.length;
-  const numColumnas = newArrayValues[0].length;
-  
-  // Escribir los datos en la hoja "Compra - EF"
-  formatoSheetEf.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValues);
-} else {
-  console.log("No se encontraron datos para agregar a la hoja 'Compra - EF'.");
-}
+      // Convertir el array de objetos en un array de arrays
+      const newArrayValues = newArray.map(obj => Object.values(obj));
+      
+      // Obtener el número de filas y columnas
+      const numFilas = newArrayValues.length;
+      const numColumnas = newArrayValues[0].length;
+      
+      // Escribir los datos en la hoja "Compra - EF"
+      formatoSheetEf.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValues);
+    } else {
+      console.log("No se encontraron datos para agregar a la hoja 'Compra - EF'.");
+    }
+
+    const formatoSheetDg = spreadsheetEf.getSheetByName('Diagnostico - Manual Compra');
+    formatoSheetDg.clear();
+    formatoSheetDg.getRange(1, 1, 1, 14).setValues([[
+      'Concesionario - sede', 'Código', 'País', 'Concesionario', 'Ciudad', 'Concesionario', 'Sede', 'Nombre Sede', 'Total', '1. Descubrimiento', '2. Compra', '3. Entrega', '4. Lealtad', '5. Habilitadores'
+    ]]);
+    
+    if (newArrayData.length > 0) {
+      // Convertir el array de objetos en un array de arrays
+      const newArrayValuesDg = newArrayData.map(obj => Object.values(obj));
+      
+      // Obtener el número de filas y columnas
+      const numFilas = newArrayValuesDg.length;
+      const numColumnas = newArrayValuesDg[0].length;
+      
+      // Escribir los datos en la hoja "Compra - EF"
+      formatoSheetDg.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValuesDg);
+    } else {
+      console.log("No se encontraron datos para agregar a la hoja 'Compra - EF'.");
+    }
 
 // Limpiar la hoja "Formato" y agregar los nuevos datos
 formatoSheet.clear();
