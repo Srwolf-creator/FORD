@@ -266,10 +266,16 @@
         }
       }
     }
-
+    
+    console.log('newData', newData)
     // console.log('newData length', Object.keys(newData).length)
     
+    let interacciones = 0
     for (const dataKey in newData) {
+      let motrarLogs = true
+      let numeroLogs = 5
+      interacciones += 1
+
       let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
       let totalOptCom = newData[dataKey].compra.paso + newData[dataKey].compra.reprobo 
       let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
@@ -282,18 +288,29 @@
       let porcentajeLea = (newData[dataKey].lealtad.paso / totalOptLea) * 100
       let porcentajeHab = (newData[dataKey].habilitadores.paso / totalOptHab) * 100 
       
-      newData[dataKey].descubrimiento = porcentajeDes
-      newData[dataKey].compra = porcentajeCom
-      newData[dataKey].entrega = porcentajeEnt
-      newData[dataKey].lealtad = porcentajeLea
-      newData[dataKey].habilitadores = porcentajeHab
+      newData[dataKey].descubrimiento = porcentajeDes.toFixed(2)
+      newData[dataKey].compra = porcentajeCom.toFixed(2)
+      newData[dataKey].entrega = porcentajeEnt.toFixed(2)
+      newData[dataKey].lealtad = porcentajeLea.toFixed(2)
+      newData[dataKey].habilitadores = porcentajeHab.toFixed(2)
 
       let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
 
       newData[dataKey].total = totalGen
+
+      if (motrarLogs) {
+        console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso + '-' + newData[dataKey].descubrimiento.reprobo)
+        console.log('Compra', newData[dataKey].compra.paso + '-' + newData[dataKey].compra.reprobo)
+        console.log('Entrega',  newData[dataKey].entrega.paso + '-' + newData[dataKey].entrega.reprobo)
+        console.log('Lealtad',  newData[dataKey].lealtad.paso + '-' + newData[dataKey].lealtad.reprobo)
+        console.log('Habilitadores',  newData[dataKey].habilitadores.paso + '-' + newData[dataKey].habilitadores.reprobo)
+
+        if (interacciones == numeroLogs) {
+          motrarLogs = false
+        }
+      }
     }
 
-    console.log('newData', newData)
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
     const formatoSheetEf = spreadsheetEf.getSheetByName('Compra - EF');
