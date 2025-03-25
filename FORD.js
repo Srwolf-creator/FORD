@@ -270,11 +270,8 @@
     // console.log('newData', newData)
     // console.log('newData length', Object.keys(newData).length)
     
-    let interacciones = 0
+    let motrarLogs = true
     for (const dataKey in newData) {
-      let motrarLogs = true
-      interacciones += 1
-
       let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
       let totalOptCom = newData[dataKey].compra.paso + newData[dataKey].compra.reprobo 
       let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
