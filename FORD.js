@@ -235,40 +235,48 @@
           newData[consede].descubrimiento.paso += paso
           newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.compra) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].compra.paso += paso
+          newData[consede].compra.reprobo += reprobo
         } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].entrega.paso += paso
+          newData[consede].entrega.reprobo += reprobo
         } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].lealtad.paso += paso
+          newData[consede].lealtad.reprobo += reprobo
         } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].habilitadores.paso += paso
+          newData[consede].habilitadores.reprobo += reprobo
         }
       } else {
         if (procesoDic == processDictionary.descubrimiento) {
           newData[consede].descubrimiento.paso += paso
           newData[consede].descubrimiento.reprobo += reprobo
         } else if (procesoDic == processDictionary.compra) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].compra.paso += paso
+          newData[consede].compra.reprobo += reprobo
         } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].entrega.paso += paso
+          newData[consede].entrega.reprobo += reprobo
         } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].lealtad.paso += paso
+          newData[consede].lealtad.reprobo += reprobo
         } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
+          newData[consede].habilitadores.paso += paso
+          newData[consede].habilitadores.reprobo += reprobo
         }
       }
     }
 
     console.log('newData', newData)
-    console.log('newData length', Object.keys(newData).length)
+    // console.log('newData length', Object.keys(newData).length)
+
+    // for (const dataKey in newData) {
+    //   let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.paso 
+    //   let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.paso 
+    //   let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.paso 
+    //   let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.paso 
+    //   let totalOptDes = dataKey[dataKey].descubrimiento.paso + dataKey[dataKey].descubrimiento.paso 
+    // }
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
     const formatoSheetEf = spreadsheetEf.getSheetByName('Compra - EF');
