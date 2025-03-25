@@ -8,7 +8,7 @@
     .addToUi(); // Añadir el menú a la interfaz de usuario
 }*/
 
-
+  let nuevosDatos = [];
  function obtenerDatosYActualizar() {
 
   // IDs de las hojas de cálculo principales y su correspondiente base (P1, P2, etc.)
@@ -67,7 +67,7 @@
     const preguntasFiltradas = ultimaPregunta === -1 ? preguntas : preguntas.slice(0, ultimaPregunta);
 
     // Preparar los datos para la hoja "Formato"
-    const nuevosDatos = [];
+  
     const dataConteo = {};
     const dataResp = {};
     data.slice(1).forEach((row, rowIndex) => { // Ignorar la fila de encabezados
@@ -322,7 +322,7 @@
     const formatoSheetDg = spreadsheetEf.getSheetByName('Diagnostico - Manual Compra');
     formatoSheetDg.clear();
     formatoSheetDg.getRange(1, 1, 1, 14).setValues([[
-      'Concesionario - sede', 'Código', 'País', 'Concesionario', 'Ciudad', 'Concesionario', 'Sede', 'Nombre Sede', 'Total', '1. Descubrimiento', '2. Compra', '3. Entrega', '4. Lealtad', '5. Habilitadores'
+      'Concesionario - sede', 'Código','Ciclo', 'País', 'Ciudad', 'Concesionario', 'Sede', 'Nombre Sede', 'Total', '1. Descubrimiento', '2. Compra', '3. Entrega', '4. Lealtad', '5. Habilitadores'
     ]]);
     
     if (newArrayData.length > 0) {
