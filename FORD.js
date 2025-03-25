@@ -186,22 +186,31 @@
 //   console.log("newArray",newArray);
 // console.log("newArray",newArray.length);
 
+    const processDictionary = {
+      descubrimiento: "1. DESCUBRIMIENTO",
+      compra: "2. COMPRA",
+      entrega: "3. ENTREGA",
+      lealtad: "4. LEALTAD",
+      habilitadores: "5. HABILITADORES"
+    }
+
+
     let newData = {}
     for (const key in newDic) {
       let calificacionDic = newDic[key].califiacionNew 
       let procesoDic = newDic[key].procesoNew 
       let concesionarioDic = newDic[key].concesionairoNew 
       let sedeDic = newDic[key].sedeNew 
-      let consede = `${concesionarioDic}-${sedeDic}`
+      let consede = `${concesionarioDic} - ${sedeDic}`
       let codigoDic = newDic[key].codigoDic
       let cicloDic = newDic[key].cicloNew
       let paisDic = newDic[key].paisNew
       let ciudadDic = newDic[key].ciudadNew
 
-      let clas = calificacionDic == '100%' ? 1 : 0
-      if (!newData[procesoDic] || newData[procesoDic].proceso == '') {
+      let cal = calificacionDic == '100%' ? 1 : 0
+      if (!newData[consede] || newData[consede].proceso == '') {
 
-        newData[procesoDic] = {
+        newData[consede] = {
           concesionario: concesionarioDic,
           sede: sedeDic,
           consede: consede,
@@ -209,12 +218,32 @@
           ciclo: cicloDic,
           pais: paisDic,
           ciudad: ciudadDic,
-          proceso: 1, 
-          clalificacion: clas
+          total: null
         } 
+
+        if (procesoDic == processDictionary.descubrimiento) {
+          newData[consede].descubrimiento = cal 
+        } else if (procesoDic == processDictionary.compra) {
+          newData[consede].compra = cal 
+        } else if (procesoDic == processDictionary.entrega) {
+          newData[consede].entrega = cal 
+        } else if (procesoDic == processDictionary.lealtad) {
+          newData[consede].lealtad = cal 
+        } else if (procesoDic == processDictionary.habilitadores) {
+          newData[consede].habilitadores = cal 
+        }
       } else {
-        newData[procesoDic].proceso += 1
-        newData[procesoDic].clalificacion += clas
+        if (procesoDic == processDictionary.descubrimiento) {
+          newData[consede].descubrimiento += cal 
+        } else if (procesoDic == processDictionary.compra) {
+          newData[consede].compra += cal 
+        } else if (procesoDic == processDictionary.entrega) {
+          newData[consede].entrega += cal 
+        } else if (procesoDic == processDictionary.lealtad) {
+          newData[consede].lealtad += cal 
+        } else if (procesoDic == processDictionary.habilitadores) {
+          newData[consede].habilitadores += cal 
+        }
       }
     }
 
