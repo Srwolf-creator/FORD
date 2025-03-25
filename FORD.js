@@ -267,23 +267,22 @@
       }
     }
     
-    // console.log('newData', newData)
     // console.log('newData length', Object.keys(newData).length)
     
     let motrarLogs = true
     for (const dataKey in newData) {
-      console.log('Key', dataKey)
-      console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso, newData[dataKey].descubrimiento.reprobo)
-      console.log('Compra', newData[dataKey].compra.paso, newData[dataKey].compra.reprobo)
-      console.log('Entrega',  newData[dataKey].entrega.paso, newData[dataKey].entrega.reprobo)
-      console.log('Lealtad',  newData[dataKey].lealtad.paso, newData[dataKey].lealtad.reprobo)
-      console.log('Habilitadores',  newData[dataKey].habilitadores.paso, newData[dataKey].habilitadores.reprobo)
+      // console.log('Key', dataKey)
+      // console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso, newData[dataKey].descubrimiento.reprobo)
+      // console.log('Compra', newData[dataKey].compra.paso, newData[dataKey].compra.reprobo)
+      // console.log('Entrega',  newData[dataKey].entrega.paso, newData[dataKey].entrega.reprobo)
+      // console.log('Lealtad',  newData[dataKey].lealtad.paso, newData[dataKey].lealtad.reprobo)
+      // console.log('Habilitadores',  newData[dataKey].habilitadores.paso, newData[dataKey].habilitadores.reprobo)
 
-      let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
-      let totalOptCom = newData[dataKey].compra.paso + newData[dataKey].compra.reprobo 
-      let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
-      let totalOptLea = newData[dataKey].lealtad.paso + newData[dataKey].lealtad.reprobo 
-      let totalOptHab = newData[dataKey].habilitadores.paso + newData[dataKey].habilitadores.reprobo 
+      let totalOptDes = (parseInt(newData[dataKey].descubrimiento.paso) + parseInt(newData[dataKey].descubrimiento.reprobo)) || 0
+      let totalOptCom = (parseInt(newData[dataKey].compra.paso) + parseInt(newData[dataKey].compra.reprobo)) || 0
+      let totalOptEnt = (parseInt(newData[dataKey].entrega.paso) + parseInt(newData[dataKey].entrega.reprobo)) || 0
+      let totalOptLea = (parseInt(newData[dataKey].lealtad.paso) + parseInt(newData[dataKey].lealtad.reprobo)) || 0
+      let totalOptHab = (parseInt(newData[dataKey].habilitadores.paso) + parseInt(newData[dataKey].habilitadores.reprobo)) || 0 
 
 
       let porcentajeDes = (newData[dataKey].descubrimiento.paso / totalOptDes) * 100
@@ -301,8 +300,10 @@
       let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
 
       newData[dataKey].total = totalGen
-
+      
     }
+    
+    console.log('newData', newData)
 
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
