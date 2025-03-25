@@ -218,19 +218,24 @@
           ciclo: cicloDic,
           pais: paisDic,
           ciudad: ciudadDic,
-          total: null
+          total: null, 
+          descubrimiento: 0,
+          compra: 0, 
+          entrega: 0, 
+          lealtad: 0, 
+          habilitadores: 0
         } 
 
         if (procesoDic == processDictionary.descubrimiento) {
-          newData[consede].descubrimiento = cal 
+          newData[consede].descubrimiento += cal 
         } else if (procesoDic == processDictionary.compra) {
-          newData[consede].compra = cal 
+          newData[consede].compra += cal 
         } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].entrega = cal 
+          newData[consede].entrega += cal 
         } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].lealtad = cal 
+          newData[consede].lealtad += cal 
         } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].habilitadores = cal 
+          newData[consede].habilitadores += cal 
         }
       } else {
         if (procesoDic == processDictionary.descubrimiento) {
@@ -248,6 +253,7 @@
     }
 
     console.log('newData', newData)
+    console.log('newData length', Object.keys(newData).length)
 
     const spreadsheetEf = SpreadsheetApp.openById(consId);
     const formatoSheetEf = spreadsheetEf.getSheetByName('Compra - EF');
