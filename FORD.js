@@ -272,11 +272,19 @@
     
     let motrarLogs = true
     for (const dataKey in newData) {
+      console.log('Key', dataKey)
+      console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso, newData[dataKey].descubrimiento.reprobo)
+      console.log('Compra', newData[dataKey].compra.paso, newData[dataKey].compra.reprobo)
+      console.log('Entrega',  newData[dataKey].entrega.paso, newData[dataKey].entrega.reprobo)
+      console.log('Lealtad',  newData[dataKey].lealtad.paso, newData[dataKey].lealtad.reprobo)
+      console.log('Habilitadores',  newData[dataKey].habilitadores.paso, newData[dataKey].habilitadores.reprobo)
+
       let totalOptDes = newData[dataKey].descubrimiento.paso + newData[dataKey].descubrimiento.reprobo 
       let totalOptCom = newData[dataKey].compra.paso + newData[dataKey].compra.reprobo 
       let totalOptEnt = newData[dataKey].entrega.paso + newData[dataKey].entrega.reprobo 
       let totalOptLea = newData[dataKey].lealtad.paso + newData[dataKey].lealtad.reprobo 
       let totalOptHab = newData[dataKey].habilitadores.paso + newData[dataKey].habilitadores.reprobo 
+
 
       let porcentajeDes = (newData[dataKey].descubrimiento.paso / totalOptDes) * 100
       let porcentajeCom = (newData[dataKey].compra.paso / totalOptCom) * 100
@@ -294,16 +302,6 @@
 
       newData[dataKey].total = totalGen
 
-      if (motrarLogs) {
-        console.log('Key', dataKey)
-        console.log('Descubrimiento',  newData[dataKey].descubrimiento.paso)
-        console.log('Compra', newData[dataKey].compra.paso)
-        console.log('Entrega',  newData[dataKey].entrega.paso)
-        console.log('Lealtad',  newData[dataKey].lealtad.paso)
-        console.log('Habilitadores',  newData[dataKey].habilitadores.paso)
-
-        motrarLogs = false
-      }
     }
 
 
