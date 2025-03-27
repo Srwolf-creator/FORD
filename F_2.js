@@ -125,8 +125,14 @@ let nuevosDatos_s = [];
     }
   
 
+    console.log('nuevosDatos_s length', nuevosDatos_s.length)
+
     let newDic = {}
     for (let j = 0; j < nuevosDatos_s.length; j++) {
+      console.log('nuevosDatos_s numElemento ' + j, nuevosDatos_s[j].numElemento)
+      console.log('nuevosDatos_s concat ' + j, nuevosDatos_s[j].concat)
+
+
       if (!nuevosDatos_s[j].numElemento) continue
       if (!nuevosDatos_s[j].concat) continue
 
@@ -171,10 +177,13 @@ let nuevosDatos_s = [];
         continue
       }
     }
-console.log("newDic",newDic);
+
+    console.log("newDic", newDic);
+
     const newArray = Object.values(newDic);
-      console.log("newArray",newArray);
-      console.log("newArray",newArray.length);
+
+    // console.log("newArray",newArray);
+    // console.log("newArray",newArray.length);
 
     const processDictionary = {
       descubrimiento: "1. DESCUBRIMIENTO",
