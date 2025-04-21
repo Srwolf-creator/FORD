@@ -212,11 +212,11 @@ function obtenerDatosYActualizar() {
             sede: item.sedeNew,
             nameSede: item.sedeNew,
             total: null,
-            descubrimiento: ,
-            compra: ,
-            entrega: ,
-            lealtad: ,
-            habilitadores: 
+            descubrimiento: null,
+            compra: null,
+            entrega: null,
+            lealtad: null,
+            habilitadores: null
           };
         }
 
@@ -242,11 +242,11 @@ function obtenerDatosYActualizar() {
       let totalOptLea = newData[dataKey].lealtad || 0
       let totalOptHab = newData[dataKey].habilitadores || 0 
 
-      let porcentajeDes = (totalOptDes * pesosProcesos.descubrimiento) / 100
-      let porcentajeCom = (totalOptCom * pesosProcesos.compra) / 100
-      let porcentajeEnt = (totalOptEnt * pesosProcesos.entrega) / 100
-      let porcentajeLea = (totalOptLea * pesosProcesos.lealtad) / 100
-      let porcentajeHab = (totalOptHab * pesosProcesos.habilitadores) / 100
+      let porcentajeDes = (totalOptDes * pesosProcesos.descubrimiento)
+      let porcentajeCom = (totalOptCom * pesosProcesos.compra) 
+      let porcentajeEnt = (totalOptEnt * pesosProcesos.entrega)
+      let porcentajeLea = (totalOptLea * pesosProcesos.lealtad)
+      let porcentajeHab = (totalOptHab * pesosProcesos.habilitadores)
       
       newData[dataKey].descubrimiento = `${porcentajeDes.toFixed(2)}%`
       newData[dataKey].compra = `${porcentajeCom.toFixed(2)}%`
