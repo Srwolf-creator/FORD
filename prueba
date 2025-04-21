@@ -238,9 +238,10 @@ function obtenerDatosYActualizar() {
           newData[consede].habilitadores.paso += paso;
           newData[consede].habilitadores.reprobo += reprobo;
         }
+
       });
 
-       // console.log('newData length', Object.keys(newData).length)
+       console.log('newData', newData)
     
     for (const dataKey in newData) {
       let totalOptDes = (parseInt(newData[dataKey].descubrimiento.paso) + parseInt(newData[dataKey].descubrimiento.reprobo)) || 0
@@ -248,6 +249,8 @@ function obtenerDatosYActualizar() {
       let totalOptEnt = (parseInt(newData[dataKey].entrega.paso) + parseInt(newData[dataKey].entrega.reprobo)) || 0
       let totalOptLea = (parseInt(newData[dataKey].lealtad.paso) + parseInt(newData[dataKey].lealtad.reprobo)) || 0
       let totalOptHab = (parseInt(newData[dataKey].habilitadores.paso) + parseInt(newData[dataKey].habilitadores.reprobo)) || 0 
+
+      console.log('totalOptCom', totalOptCom)
 
       let porcentajeDes = totalOptDes > 0 ? (newData[dataKey].descubrimiento.paso / totalOptDes) * 100 : 0
       let porcentajeCom = totalOptCom > 0 ? (newData[dataKey].compra.paso / totalOptCom) * 100 : 0
