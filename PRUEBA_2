@@ -1,6 +1,12 @@
- function obtenerDatosYActualizar_s() {
+let nuevosDatos_s = [];
+let nuevosDatosHoja_s = [];
+
+function obtenerDatosYActualizar_s() {
+  console.log("Inicio de la función obtenerDatosYActualizar_s()");
+  console.time("Función completa");
 
   // IDs de las hojas de cálculo principales y su correspondiente base (P1, P2, etc.)
+  console.time("Configuración inicial");
   const ids = [
     { id: '1dhG5ZzEW1pj1LOA57Js-FUsQpJia8-Z1S_1zu5zTk8U', base: 'S1' },
     { id: '1cd0Uc4X9GckQrC5sRocyLyeHfT7eIuEE7K_zNxjm7fM', base: 'S2' },
@@ -10,9 +16,8 @@
     { id: '1xwDuRb-KJMM5H0jXnl8XDLcBEgz9miekkOQESriyfoc', base: 'S6' },
     { id: '1cP5K1I3LOIUuT0SiAABgXpCxreM1p-oJR60O0fpi9aw', base: 'S7' },
     { id: '1eLmm59Gq9bpSaGLc3pqJZao2F0RznyhV2EYeExv-s2U', base: 'S8' }
-    
   ];
-  // Pesos por proceso
+  
   const pesosProcesos = {
     agendamiento: 25,
     recepcion: 20,
@@ -22,10 +27,12 @@
     instalaciones: 10,
     gerenciamiento: 10
   };
-  // ID de la hoja de cálculo adicional para buscar datos
+  
   const consId = '1FWpTR65G5WLzIRraTtAejRq24aojsJYv5x7S_KZ44lg';
+  console.timeEnd("Configuración inicial");
 
   // Columnas a extraer de las hojas principales
+  console.time("Obtener datos de SUBPROCESOS y COORDENADAS");
   const columnas = {
     pais: 'C',
     ciclo: 'E',
@@ -36,7 +43,6 @@
     sede: 'H'
   };
 
-  // Columnas a buscar en la hoja adicional
   const columnasCons = {
     pregunta: 'C',
     proceso: 'G',
@@ -47,18 +53,17 @@
     porPeso: 'L'
   };
 
-  // Abrir la hoja adicional "SUBPROCESOS"
   const consSpreadsheet = SpreadsheetApp.openById(consId);
   const consSheet = consSpreadsheet.getSheetByName('SUBPROCESOS');
   const consData = consSheet.getDataRange().getValues();
 
- // Obtener datos de COORDENADAS
   const coordSheet = consSpreadsheet.getSheetByName('COORDENADAS');
   if (!coordSheet) {
     console.error("No se encontró la hoja COORDENADAS");
     return;
   }
   const coordData = coordSheet.getDataRange().getValues();
+  console.timeEnd("Obtener datos de SUBPROCESOS y COORDENADAS");
 
   function buscarCoordenada(pais, concesionario, sede, ciudad) {
     const normalize = (str) => String(str).trim().toUpperCase();
@@ -76,114 +81,116 @@
     }
     return "";
   }
-  // Recorrer cada hoja de cálculo principal
-  ids.forEach(({ id, base }) => {
+
+  // Procesar cada hoja principal
+  console.time("Procesar todas las hojas principales");
+  ids.forEach(({ id, base }, index) => {
+    console.time(`Procesar hoja ${base} (${index+1}/${ids.length})`);
+    
     const spreadsheet = SpreadsheetApp.openById(id);
     const sheet = spreadsheet.getSheetByName('Respuestas de formulario 1');
     const formatoSheet = spreadsheet.getSheetByName('Formato');
 
-    // Obtener los datos de la hoja "Respuestas de formulario 1"
+    console.time(`Obtener datos de hoja ${base}`);
     const data = sheet.getDataRange().getValues();
+    console.timeEnd(`Obtener datos de hoja ${base}`);
 
-    // Obtener los encabezados de las preguntas (K1, L1, M1, etc.)
-    const preguntas = data[0].slice(10); // Desde la columna K (índice 10) hasta el final
-    const ultimaPregunta = preguntas.findIndex(p => p === ''); // Encontrar el primer campo vacío
+    console.time(`Procesar preguntas de ${base}`);
+    const preguntas = data[0].slice(10);
+    const ultimaPregunta = preguntas.findIndex(p => p === '');
     const preguntasFiltradas = ultimaPregunta === -1 ? preguntas : preguntas.slice(0, ultimaPregunta);
+    console.timeEnd(`Procesar preguntas de ${base}`);
 
-    // Preparar los datos para la hoja "Formato"
-  
+    console.time(`Procesar filas de datos de ${base}`);
     const dataconteoP = {};
     const dataResp = {};
-      data.slice(1).forEach((row) => {
-        const pais = row[columnas.pais.charCodeAt(0) - 65];
-        const ciclo = row[columnas.ciclo.charCodeAt(0) - 65];
-        const codigo = row[columnas.codigo.charCodeAt(0) - 65];
-        const concesionario = row[columnas.concesionario.charCodeAt(0) - 65];
-        const ciudad = row[columnas.ciudad.charCodeAt(0) - 65];
-        const fechaVisita = row[columnas.fechaVisita.charCodeAt(0) - 65];
-        const sede = row[columnas.sede.charCodeAt(0) - 65];
-        const fechaFormateada = Utilities.formatDate(new Date(fechaVisita), Session.getScriptTimeZone(), 'dd/MM/yyyy');
+    
+    data.slice(1).forEach((row) => {
+      const pais = row[columnas.pais.charCodeAt(0) - 65];
+      const ciclo = row[columnas.ciclo.charCodeAt(0) - 65];
+      const codigo = row[columnas.codigo.charCodeAt(0) - 65];
+      const concesionario = row[columnas.concesionario.charCodeAt(0) - 65];
+      const ciudad = row[columnas.ciudad.charCodeAt(0) - 65];
+      const fechaVisita = row[columnas.fechaVisita.charCodeAt(0) - 65];
+      const sede = row[columnas.sede.charCodeAt(0) - 65];
+      const fechaFormateada = Utilities.formatDate(new Date(fechaVisita), Session.getScriptTimeZone(), 'dd/MM/yyyy');
 
-        preguntasFiltradas.forEach((pregunta, colIndex) => {
-          const respuesta = row[10 + colIndex];
-          if (respuesta !== '') {
-            const filaCons = consData.find(fila => fila[columnasCons.pregunta.charCodeAt(0) - 65] === pregunta);
-            const proceso = filaCons ? filaCons[columnasCons.proceso.charCodeAt(0) - 65] : '';
-            const subproceso = filaCons ? filaCons[columnasCons.subproceso.charCodeAt(0) - 65] : '';
-            const elemento = filaCons ? filaCons[columnasCons.elemento.charCodeAt(0) - 65] : '';
-            const numElemento = filaCons ? filaCons[columnasCons.numElemento.charCodeAt(0) - 65] : '';
-            const numPeso = filaCons ? filaCons[columnasCons.numPeso.charCodeAt(0) - 65] : '';
-            const porPeso = filaCons ? filaCons[columnasCons.porPeso.charCodeAt(0) - 65] : '';
-            const concat = `${pais}-${ciclo}-${codigo}-${concesionario}-${ciudad}-${fechaFormateada}-${id}-${base}-${numElemento}`;
+      preguntasFiltradas.forEach((pregunta, colIndex) => {
+        const respuesta = row[10 + colIndex];
+        if (respuesta !== '') {
+          const filaCons = consData.find(fila => fila[columnasCons.pregunta.charCodeAt(0) - 65] === pregunta);
+          const proceso = filaCons ? filaCons[columnasCons.proceso.charCodeAt(0) - 65] : '';
+          const subproceso = filaCons ? filaCons[columnasCons.subproceso.charCodeAt(0) - 65] : '';
+          const elemento = filaCons ? filaCons[columnasCons.elemento.charCodeAt(0) - 65] : '';
+          const numElemento = filaCons ? filaCons[columnasCons.numElemento.charCodeAt(0) - 65] : '';
+          const numPeso = filaCons ? filaCons[columnasCons.numPeso.charCodeAt(0) - 65] : '';
+          const porPeso = filaCons ? filaCons[columnasCons.porPeso.charCodeAt(0) - 65] : '';
+          const concat = `${pais}-${ciclo}-${codigo}-${concesionario}-${ciudad}-${fechaFormateada}-${id}-${base}-${numElemento}`;
 
-            if (!dataconteoP[concat]) {
-              dataconteoP[concat] = 1;
-              dataResp[concat] = (respuesta === 'Si') ? 1 : 0;
-            } else {
-              dataconteoP[concat] += 1;
-              if (respuesta === 'Si') dataResp[concat] += 1;
-            }
-
-            nuevosDatosHoja_s.push({
-              pais, ciclo, codigo, concesionario, ciudad, fechaVisita, pregunta, 
-              respuesta, proceso, subproceso, elemento, numElemento, sede, base, 
-              concat, conteoP: null, puntajeP: null, aprobacion: null, numPeso, porPeso
-            });
+          if (!dataconteoP[concat]) {
+            dataconteoP[concat] = 1;
+            dataResp[concat] = (respuesta === 'Si') ? 1 : 0;
+          } else {
+            dataconteoP[concat] += 1;
+            if (respuesta === 'Si') dataResp[concat] += 1;
           }
-        });
-      });
 
-
-      // Calcular aprobación para cada registro
-      nuevosDatosHoja_s.forEach(item => {
-        const key = item.concat;
-        if (dataconteoP[key]) {
-          item.conteoP = dataconteoP[key];
-          item.puntajeP = dataResp[key];
-          item.aprobacion = (dataconteoP[key] === dataResp[key]) ? 'SI' : 'NO';
+          nuevosDatosHoja_s.push({
+            pais, ciclo, codigo, concesionario, ciudad, fechaVisita, pregunta, 
+            respuesta, proceso, subproceso, elemento, numElemento, sede, base, 
+            concat, conteoP: null, puntajeP: null, aprobacion: null, numPeso, porPeso
+          });
         }
       });
+    });
+    console.timeEnd(`Procesar filas de datos de ${base}`);
 
-      // Acumular datos de todas las hojas
-      nuevosDatos_s = nuevosDatos_s.concat(nuevosDatosHoja_s);
+    console.time(`Calcular aprobaciones para ${base}`);
+    nuevosDatosHoja_s.forEach(item => {
+      const key = item.concat;
+      if (dataconteoP[key]) {
+        item.conteoP = dataconteoP[key];
+        item.puntajeP = dataResp[key];
+        item.aprobacion = (dataconteoP[key] === dataResp[key]) ? 'SI' : 'NO';
+      }
+    });
+    console.timeEnd(`Calcular aprobaciones para ${base}`);
 
-      // Procesar para generar resumen
-      let newDic = {};
-      nuevosDatosHoja_s.forEach((item) => {
-        if (!item.numElemento || !item.concat) return;
-        
-        const coordenada = buscarCoordenada(item.pais, item.concesionario, item.sede, item.ciudad);
-        const newKey = item.concat;   
+    nuevosDatos_s = nuevosDatos_s.concat(nuevosDatosHoja_s);
 
+    console.time(`Generar resumen para ${base}`);
+    let newDic = {};
+    nuevosDatosHoja_s.forEach((item) => {
+      if (!item.numElemento || !item.concat) return;
+      
+      const coordenada = buscarCoordenada(item.pais, item.concesionario, item.sede, item.ciudad);
+      const newKey = item.concat;   
 
-   if (!newDic[newKey]) {
-          newDic[newKey] = {
-            paisNew: item.pais,
-            cicloNew: item.ciclo,
-            codigoNew: item.codigo,
-            concesionairoNew: item.concesionario,
-            ciudadNew: item.ciudad,
-            fechavisitaNew: item.fechaVisita,
-            procesoNew: item.proceso,
-            subprocesoNew: item.subproceso,
-            elementoNew: item.elemento,
-            numElementoNew: item.numElemento,
-            sedeNew: item.sede,
-            baseNew: item.base,
-            concatNew: item.concat,
-            aprobacionNew: item.aprobacion,
-            numPesoNew: item.numPeso,
-            porPesoNew: item.porPeso,
-            puntajeMaximoNew: item.aprobacion === 'SI' ? item.numPeso : 0,
-            calificacionNew: item.aprobacion === 'SI' ? item.porPeso : 0,
-            coordenadaNew: coordenada
-          };
-        }
-      });
-
-
-    // console.log("newArray",newArray);
-    // console.log("newArray",newArray.length);
+      if (!newDic[newKey]) {
+        newDic[newKey] = {
+          paisNew: item.pais,
+          cicloNew: item.ciclo,
+          codigoNew: item.codigo,
+          concesionairoNew: item.concesionario,
+          ciudadNew: item.ciudad,
+          fechavisitaNew: item.fechaVisita,
+          procesoNew: item.proceso,
+          subprocesoNew: item.subproceso,
+          elementoNew: item.elemento,
+          numElementoNew: item.numElemento,
+          sedeNew: item.sede,
+          baseNew: item.base,
+          concatNew: item.concat,
+          aprobacionNew: item.aprobacion,
+          numPesoNew: item.numPeso,
+          porPesoNew: item.porPeso,
+          puntajeMaximoNew: item.aprobacion === 'SI' ? item.numPeso : 0,
+          calificacionNew: item.aprobacion === 'SI' ? item.porPeso : 0,
+          coordenadaNew: coordenada
+        };
+      }
+    });
+    console.timeEnd(`Generar resumen para ${base}`);
 
     const processDictionary = {
       agendamiento: "1. AGENDAMIENTO",
@@ -195,60 +202,60 @@
       gerenciamiento: "7. GERENCIAMIENTO"
     }
 
+    console.time(`Calcular porcentajes para ${base}`);
+    let newData = {};
+    Object.values(newDic).forEach(item => {
+      const consede = `${item.concesionairoNew} - ${item.sedeNew}`;
+      let porcentajeStr = '0';
+      if (typeof item.calificacionNew === 'string') {
+        porcentajeStr = item.calificacionNew.replace('%', '') || '0';
+      } else if (typeof item.calificacionNew === 'number') {
+        porcentajeStr = item.calificacionNew.toString();
+      }
 
-let newData = {};
-      Object.values(newDic).forEach(item => {
-        const consede = `${item.concesionairoNew} - ${item.sedeNew}`;
-        // Manejo seguro de calificacionNew
-        let porcentajeStr = '0';
-        if (typeof item.calificacionNew === 'string') {
-          porcentajeStr = item.calificacionNew.replace('%', '') || '0';
-        } else if (typeof item.calificacionNew === 'number') {
-          porcentajeStr = item.calificacionNew.toString();
-        }
+      const porcentaje = parseFloat(porcentajeStr) || 0;
 
-        const porcentaje = parseFloat(porcentajeStr) || 0;
+      if (!newData[consede]) {
+        newData[consede] = {
+          consede: consede,
+          codigo: item.codigoNew,
+          ciclo: item.cicloNew,
+          pais: item.paisNew,
+          ciudad: item.ciudadNew,
+          concesionario: item.concesionairoNew,
+          sede: item.sedeNew,
+          nameSede: item.sedeNew,
+          total: null,
+          agendamiento: null,
+          recepcion:null,
+          servicio: null,
+          entrega: null,
+          relCliente: null,
+          instalaciones: null,
+          gerenciamiento: null
+        };
+      }
 
-        if (!newData[consede]) {
-          newData[consede] = {
-            consede: consede,
-            codigo: item.codigoNew,
-            ciclo: item.cicloNew,
-            pais: item.paisNew,
-            ciudad: item.ciudadNew,
-            concesionario: item.concesionairoNew,
-            sede: item.sedeNew,
-            nameSede: item.sedeNew,
-            total: null,
-            agendamiento: null,
-            recepcion:null,
-            servicio: null,
-            entrega: null,
-            relCliente: null,
-            instalaciones: null,
-            gerenciamiento: null
-          };
-        }
+      const proceso = item.procesoNew;
+      if (proceso === processDictionary.agendamiento) {
+        newData[consede].agendamiento += porcentaje;
+      } else if (proceso === processDictionary.recepcion) {
+        newData[consede].recepcion += porcentaje;
+      } else if (proceso === processDictionary.servicio) {
+        newData[consede].servicio += porcentaje;      
+      } else if (proceso === processDictionary.entrega) {
+        newData[consede].entrega += porcentaje;
+      } else if (proceso === processDictionary.relCliente) {
+        newData[consede].relCliente += porcentaje;
+      } else if (proceso === processDictionary.instalaciones) {
+        newData[consede].instalaciones += porcentaje;
+      } else if (proceso === processDictionary.gerenciamiento) {
+        newData[consede].gerenciamiento += porcentaje;
+      }
+    });
+    console.timeEnd(`Calcular porcentajes para ${base}`);
 
-  const proceso = item.procesoNew;
-        if (proceso === processDictionary.agendamiento) {
-          newData[consede].agendamiento += porcentaje;
-        } else if (proceso === processDictionary.recepcion) {
-          newData[consede].recepcion += porcentaje;
-        } else if (proceso === processDictionary.servicio) {
-          newData[consede].servicio += porcentaje;      
-        } else if (proceso === processDictionary.entrega) {
-          newData[consede].entrega += porcentaje;
-        } else if (proceso === processDictionary.relCliente) {
-          newData[consede].relCliente += porcentaje;
-        } else if (proceso === processDictionary.instalaciones) {
-          newData[consede].instalaciones += porcentaje;
-        } else if (proceso === processDictionary.gerenciamiento) {
-          newData[consede].gerenciamiento += porcentaje;
-        }
-
-      });
-    
+    console.time(`Aplicar pesos para ${base}`);
     for (const dataKey in newData) {
       let totalOptAge = newData[dataKey].agendamiento || 0
       let totalOptRec = newData[dataKey].recepcion || 0
@@ -278,11 +285,11 @@ let newData = {};
 
       newData[dataKey].total = `${totalGen.toFixed(2)}%`
     }
+    console.timeEnd(`Aplicar pesos para ${base}`);
 
-    // console.log('newData', newData)
     const newArrayData = Object.values(newData)
 
-
+    console.time(`Escribir datos en hojas de resultado para ${base}`);
     const spreadsheetEf = SpreadsheetApp.openById(consId);
     const formatoSheetEf = spreadsheetEf.getSheetByName('Servicio - EF');
     formatoSheetEf.clear();
@@ -290,13 +297,12 @@ let newData = {};
       'pais', 'ciclo', 'Código', 'Concesionario', 'Ciudad', 'FechaVisita', 'Proceso', 'Subproceso', 'Elemento', 'numElemento', 'Sede', 'Base', 'Concatenado', 'aprobacion', 'numPeso', 'porPeso', 'Puntaje', 'Calificacion', 'Coordenada'
     ]]);
     
-const datosFinales = Object.values(newDic); // O usa nuevosDatos_s si ahí están los datos
-if (datosFinales.length > 0) {
-  const valoresFinales = datosFinales.map(obj => Object.values(obj));
-  formatoSheetEf.getRange(2, 1, valoresFinales.length, valoresFinales[0].length).setValues(valoresFinales);
-}
- else {
-      console.log("No se encontraron datos para agregar a la hoja 'Servicio - EF'.");
+    const datosFinales = Object.values(newDic);
+    if (datosFinales.length > 0) {
+      const valoresFinales = datosFinales.map(obj => Object.values(obj));
+      formatoSheetEf.getRange(2, 1, valoresFinales.length, valoresFinales[0].length).setValues(valoresFinales);
+    } else {
+      console.log(`No se encontraron datos para agregar a la hoja 'Servicio - EF' en ${base}.`);
     }
 
     const formatoSheetDg = spreadsheetEf.getSheetByName('Diagnostico - Manual Servicio');
@@ -306,33 +312,29 @@ if (datosFinales.length > 0) {
     ]]);
     
     if (newArrayData.length > 0) {
-      // Convertir el array de objetos en un array de arrays
       const newArrayValuesDg = newArrayData.map(obj => Object.values(obj));
-      
-      // Obtener el número de filas y columnas
       const numFilas = newArrayValuesDg.length;
       const numColumnas = newArrayValuesDg[0].length;
-      
-      // Escribir los datos en la hoja "servicio - EF"
       formatoSheetDg.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValuesDg);
     } else {
-      console.log("No se encontraron datos para agregar a la hoja Diagnostico - Manual Servicio'.");
+      console.log(`No se encontraron datos para agregar a la hoja Diagnostico - Manual Servicio en ${base}.`);
     }
 
-// Limpiar la hoja "Formato" y agregar los nuevos datos
-formatoSheet.clear();
-formatoSheet.getRange(1, 1, 1, 20).setValues([[
-  'País', 'Ciclo', 'Código', 'Concesionario', 'Ciudad', 'Fecha Visita', 'Pregunta', 'Respuesta', 'Proceso', 'Subproceso1', 'Elemento', '#Elemento', 'Sede', 'Base', 'Concatenado', 'conteoP', 'puntajeP', 'aprobacion', 'numPeso', 'porPeso'
-]]);
+    formatoSheet.clear();
+    formatoSheet.getRange(1, 1, 1, 20).setValues([[
+      'País', 'Ciclo', 'Código', 'Concesionario', 'Ciudad', 'Fecha Visita', 'Pregunta', 'Respuesta', 'Proceso', 'Subproceso1', 'Elemento', '#Elemento', 'Sede', 'Base', 'Concatenado', 'conteoP', 'puntajeP', 'aprobacion', 'numPeso', 'porPeso'
+    ]]);
 
-if (nuevosDatos_s.length > 0) {
-  // Convertir el array de objetos en un array de arrays
-  const nuevosDatos_sArray = nuevosDatos_s.map(obj => Object.values(obj));
-  
-  // Escribir los datos en la hoja "Formato"
-  formatoSheet.getRange(2, 1, nuevosDatos_sArray.length, nuevosDatos_sArray[0].length).setValues(nuevosDatos_sArray);
-} else {
-  console.log("No se encontraron datos para agregar a la hoja 'Formato'.");
+    if (nuevosDatos_s.length > 0) {
+      const nuevosDatos_sArray = nuevosDatos_s.map(obj => Object.values(obj));
+      formatoSheet.getRange(2, 1, nuevosDatos_sArray.length, nuevosDatos_sArray[0].length).setValues(nuevosDatos_sArray);
+    } else {
+      console.log(`No se encontraron datos para agregar a la hoja 'Formato' en ${base}.`);
+    }
+    console.timeEnd(`Escribir datos en hojas de resultado para ${base}`);
+    console.timeEnd(`Procesar hoja ${base} (${index+1}/${ids.length})`);
+  });
+  console.timeEnd("Procesar todas las hojas principales");
+  console.timeEnd("Función completa");
+  console.log("Fin de la función obtenerDatosYActualizar_s()");
 }
-});
-  } 
