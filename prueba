@@ -199,8 +199,8 @@ function obtenerDatosYActualizar() {
           porcentajeStr = item.calificacionNew.toString();
         }
         const porcentaje = parseFloat(porcentajeStr) || 0;
-        const paso = porcentaje !== 0 ? 1 : 0;
-        const reprobo = porcentaje == 0 ? 0 : 1;
+        const paso = porcentaje > 0 ? 1 : 0;
+        const reprobo = porcentaje == 0 ? 1 : 0;
 
         if (!newData[consede]) {
           newData[consede] = {
