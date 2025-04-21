@@ -1,8 +1,3 @@
-
-let nuevosDatos_s = [];
-  let nuevosDatosHoja_s = [];
-
-
  function obtenerDatosYActualizar_s() {
 
   // IDs de las hojas de cálculo principales y su correspondiente base (P1, P2, etc.)
@@ -17,7 +12,16 @@ let nuevosDatos_s = [];
     { id: '1eLmm59Gq9bpSaGLc3pqJZao2F0RznyhV2EYeExv-s2U', base: 'S8' }
     
   ];
-   
+  // Pesos por proceso
+  const pesosProcesos = {
+    agendamiento: 25,
+    recepcion: 20,
+    servicio: 20,
+    entrega: 25,
+    relCliente: 10,
+    instalaciones: 10,
+    gerenciamiento: 10
+  };
   // ID de la hoja de cálculo adicional para buscar datos
   const consId = '1FWpTR65G5WLzIRraTtAejRq24aojsJYv5x7S_KZ44lg';
 
@@ -74,7 +78,6 @@ let nuevosDatos_s = [];
   }
   // Recorrer cada hoja de cálculo principal
   ids.forEach(({ id, base }) => {
-    const nuevosDatosHoja_s = [];
     const spreadsheet = SpreadsheetApp.openById(id);
     const sheet = spreadsheet.getSheetByName('Respuestas de formulario 1');
     const formatoSheet = spreadsheet.getSheetByName('Formato');
@@ -183,109 +186,95 @@ let nuevosDatos_s = [];
     // console.log("newArray",newArray.length);
 
     const processDictionary = {
-      descubrimiento: "1. DESCUBRIMIENTO",
-      compra: "2. COMPRA",
-      entrega: "3. ENTREGA",
-      lealtad: "4. LEALTAD",
-      habilitadores: "5. HABILITADORES"
+      agendamiento: "1. AGENDAMIENTO",
+      recepcion: "2. RECEPCION",
+      servicio: "3. SERVICIO",
+      entrega: "4. ENTREGA",
+      relCliente: "5. RELACION CON EL CLIENTE",
+      instalaciones: "6. INSTALACIONES",
+      gerenciamiento: "7. GERENCIAMIENTO"
     }
 
 
-    let newData = {}
-    for (const key in newDic) {
-      let aprobacionDic = newDic[key].calificacionNew 
-      let procesoDic = newDic[key].procesoNew 
-      let concesionarioDic = newDic[key].concesionairoNew 
-      let sedeDic = newDic[key].sedeNew 
-      let consede = `${concesionarioDic} - ${sedeDic}`
-      let codigoDic = newDic[key].codigoNew
-      let cicloDic = newDic[key].cicloNew
-      let paisDic = newDic[key].paisNew
-      let ciudadDic = newDic[key].ciudadNew
-
-
-
-      let cal = aprobacionDic == '100%' ? true : false
-      let paso = cal == true ? 1 : 0
-      let reprobo = cal == false ? 1 : 0
-
-      if (!newData[consede] || newData[consede].proceso == '') {
-
-        newData[consede] = {
-          consede: consede,
-          codigo: codigoDic,
-          ciclo: cicloDic,
-          pais: paisDic,
-          ciudad: ciudadDic,
-          concesionario: concesionarioDic,
-          sede: sedeDic,
-          nameSede: sedeDic,
-          total: null, 
-          descubrimiento: {paso: 0, reprobo: 0},
-          compra: {paso: 0, reprobo: 0}, 
-          entrega: {paso: 0, reprobo: 0}, 
-          lealtad: {paso: 0, reprobo: 0}, 
-          habilitadores: {paso: 0, reprobo: 0}
-        } 
-
-        if (procesoDic == processDictionary.descubrimiento) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
-        } else if (procesoDic == processDictionary.compra) {
-          newData[consede].compra.paso += paso
-          newData[consede].compra.reprobo += reprobo
-        } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].entrega.paso += paso
-          newData[consede].entrega.reprobo += reprobo
-        } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].lealtad.paso += paso
-          newData[consede].lealtad.reprobo += reprobo
-        } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].habilitadores.paso += paso
-          newData[consede].habilitadores.reprobo += reprobo
+let newData = {};
+      Object.values(newDic).forEach(item => {
+        const consede = `${item.concesionairoNew} - ${item.sedeNew}`;
+        // Manejo seguro de calificacionNew
+        let porcentajeStr = '0';
+        if (typeof item.calificacionNew === 'string') {
+          porcentajeStr = item.calificacionNew.replace('%', '') || '0';
+        } else if (typeof item.calificacionNew === 'number') {
+          porcentajeStr = item.calificacionNew.toString();
         }
-      } else {
-        if (procesoDic == processDictionary.descubrimiento) {
-          newData[consede].descubrimiento.paso += paso
-          newData[consede].descubrimiento.reprobo += reprobo
-        } else if (procesoDic == processDictionary.compra) {
-          newData[consede].compra.paso += paso
-          newData[consede].compra.reprobo += reprobo
-        } else if (procesoDic == processDictionary.entrega) {
-          newData[consede].entrega.paso += paso
-          newData[consede].entrega.reprobo += reprobo
-        } else if (procesoDic == processDictionary.lealtad) {
-          newData[consede].lealtad.paso += paso
-          newData[consede].lealtad.reprobo += reprobo
-        } else if (procesoDic == processDictionary.habilitadores) {
-          newData[consede].habilitadores.paso += paso
-          newData[consede].habilitadores.reprobo += reprobo
+
+        const porcentaje = parseFloat(porcentajeStr) || 0;
+
+        if (!newData[consede]) {
+          newData[consede] = {
+            consede: consede,
+            codigo: item.codigoNew,
+            ciclo: item.cicloNew,
+            pais: item.paisNew,
+            ciudad: item.ciudadNew,
+            concesionario: item.concesionairoNew,
+            sede: item.sedeNew,
+            nameSede: item.sedeNew,
+            total: null,
+            agendamiento: null,
+            recepcion:null,
+            servicio: null,
+            entrega: null,
+            relCliente: null,
+            instalaciones: null,
+            gerenciamiento: null
+          };
         }
-      }
-    }
-    
-    // console.log('newData length', Object.keys(newData).length)
+
+  const proceso = item.procesoNew;
+        if (proceso === processDictionary.agendamiento) {
+          newData[consede].agendamiento += porcentaje;
+        } else if (proceso === processDictionary.recepcion) {
+          newData[consede].recepcion += porcentaje;
+        } else if (proceso === processDictionary.servicio) {
+          newData[consede].servicio += porcentaje;      
+        } else if (proceso === processDictionary.entrega) {
+          newData[consede].entrega += porcentaje;
+        } else if (proceso === processDictionary.relCliente) {
+          newData[consede].relCliente += porcentaje;
+        } else if (proceso === processDictionary.instalaciones) {
+          newData[consede].instalaciones += porcentaje;
+        } else if (proceso === processDictionary.gerenciamiento) {
+          newData[consede].gerenciamiento += porcentaje;
+        }
+
+      });
     
     for (const dataKey in newData) {
-      let totalOptDes = (parseInt(newData[dataKey].descubrimiento.paso) + parseInt(newData[dataKey].descubrimiento.reprobo)) || 0
-      let totalOptCom = (parseInt(newData[dataKey].compra.paso) + parseInt(newData[dataKey].compra.reprobo)) || 0
-      let totalOptEnt = (parseInt(newData[dataKey].entrega.paso) + parseInt(newData[dataKey].entrega.reprobo)) || 0
-      let totalOptLea = (parseInt(newData[dataKey].lealtad.paso) + parseInt(newData[dataKey].lealtad.reprobo)) || 0
-      let totalOptHab = (parseInt(newData[dataKey].habilitadores.paso) + parseInt(newData[dataKey].habilitadores.reprobo)) || 0 
+      let totalOptAge = newData[dataKey].agendamiento || 0
+      let totalOptRec = newData[dataKey].recepcion || 0
+      let totalOptSer = newData[dataKey].servicio || 0
+      let totalOptEnt = newData[dataKey].entrega || 0
+      let totalOptRel = newData[dataKey].relCliente || 0 
+      let totalOptIns = newData[dataKey].instalaciones || 0 
+      let totalOptGer = newData[dataKey].gerenciamiento || 0 
 
-      let porcentajeDes = totalOptDes > 0 ? (newData[dataKey].descubrimiento.paso / totalOptDes) * 100 : 0
-      let porcentajeCom = totalOptCom > 0 ? (newData[dataKey].compra.paso / totalOptCom) * 100 : 0
-      let porcentajeEnt = totalOptEnt > 0 ? (newData[dataKey].entrega.paso / totalOptEnt) * 100 : 0
-      let porcentajeLea = totalOptLea > 0 ? (newData[dataKey].lealtad.paso / totalOptLea) * 100 : 0
-      let porcentajeHab = totalOptHab > 0 ? (newData[dataKey].habilitadores.paso / totalOptHab) * 100 : 0
+      let porcentajeAge = (totalOptAge * pesosProcesos.agendamiento)
+      let porcentajeRec = (totalOptRec * pesosProcesos.recepcion) 
+      let porcentajeSer = (totalOptSer * pesosProcesos.servicio)
+      let porcentajeEnt = (totalOptEnt * pesosProcesos.entrega)
+      let porcentajeRel = (totalOptRel * pesosProcesos.relCliente)
+      let porcentajeIns = (totalOptIns * pesosProcesos.instalaciones)
+      let porcentajeGer = (totalOptGer * pesosProcesos.gerenciamiento)
       
-      newData[dataKey].descubrimiento = `${porcentajeDes.toFixed(2)}%`
-      newData[dataKey].compra = `${porcentajeCom.toFixed(2)}%`
+      newData[dataKey].agendamiento = `${porcentajeAge.toFixed(2)}%`
+      newData[dataKey].recepcion = `${porcentajeRec.toFixed(2)}%`
+      newData[dataKey].servicio = `${porcentajeSer.toFixed(2)}%`
       newData[dataKey].entrega = `${porcentajeEnt.toFixed(2)}%`
-      newData[dataKey].lealtad = `${porcentajeLea.toFixed(2)}%`
-      newData[dataKey].habilitadores = `${porcentajeHab.toFixed(2)}%`
+      newData[dataKey].relCliente = `${porcentajeRel.toFixed(2)}%`
+      newData[dataKey].instalaciones = `${porcentajeIns.toFixed(2)}%`
+      newData[dataKey].gerenciamiento = `${porcentajeGer.toFixed(2)}%`
 
-      let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
+      let totalGen = porcentajeAge + porcentajeRec + porcentajeSer + porcentajeEnt + porcentajeRel+ porcentajeIns + porcentajeGer
 
       newData[dataKey].total = `${totalGen.toFixed(2)}%`
     }
@@ -312,8 +301,8 @@ if (datosFinales.length > 0) {
 
     const formatoSheetDg = spreadsheetEf.getSheetByName('Diagnostico - Manual Servicio');
     formatoSheetDg.clear();
-    formatoSheetDg.getRange(1, 1, 1, 14).setValues([[
-      'Concesionario - sede', 'Código','Ciclo', 'País', 'Ciudad', 'Concesionario', 'Sede', 'Nombre Sede', 'Total', '1. Descubrimiento', '2. Compra', '3. Entrega', '4. Lealtad', '5. Habilitadores'
+    formatoSheetDg.getRange(1, 1, 1, 16).setValues([[
+      'Concesionario - sede', 'Código','Ciclo', 'País', 'Ciudad', 'Concesionario', 'Sede', 'Nombre Sede', 'Total', '1. AGENDAMIENTO', '2. RECEPCION', '3. SERVICIO', '4. ENTREGA', '5. RELACIONAMIENTO CLIENTE', '6. INSTALACIONES', '7. GERENCIAMIENTO'
     ]]);
     
     if (newArrayData.length > 0) {
@@ -324,7 +313,7 @@ if (datosFinales.length > 0) {
       const numFilas = newArrayValuesDg.length;
       const numColumnas = newArrayValuesDg[0].length;
       
-      // Escribir los datos en la hoja "Compra - EF"
+      // Escribir los datos en la hoja "servicio - EF"
       formatoSheetDg.getRange(2, 1, numFilas, numColumnas).setValues(newArrayValuesDg);
     } else {
       console.log("No se encontraron datos para agregar a la hoja Diagnostico - Manual Servicio'.");
