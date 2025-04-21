@@ -254,7 +254,7 @@ function obtenerDatosYActualizar() {
       newData[dataKey].lealtad = `${porcentajeLea.toFixed(2)}%`
       newData[dataKey].habilitadores = `${porcentajeHab.toFixed(2)}%`
 
-      let totalGen = (porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab) / 5 
+      let totalGen = porcentajeDes + porcentajeCom + porcentajeEnt + porcentajeLea + porcentajeHab
 
       newData[dataKey].total = `${totalGen.toFixed(2)}%`
     }
